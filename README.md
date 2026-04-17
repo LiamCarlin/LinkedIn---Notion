@@ -63,6 +63,49 @@ Saved export mode:
 python app.py "/Users/you/Downloads/Someone LinkedIn.mhtml"
 ```
 
+## Follow-Up Automation (Pending Invites -> Messaging)
+
+This repo also includes `follow_up_automation.py` for your connection follow-up workflow:
+
+1. Reads contacts from Notion where status is a pending invite status.
+2. Checks each LinkedIn URL to determine whether invite is accepted.
+3. Marks accepted contacts in Notion as `Invite Accepted`.
+4. Only after all checks are complete, prepares messages for accepted contacts from `message_template.txt` with `{first_name}` / `{name}` replacements.
+5. Lets you quickly approve/reject each prepared message first (no sending yet).
+6. Sends all approved messages in a second pass.
+7. Marks sent contacts in Notion as `Initial Reachout Initiated`.
+
+Default behavior processes all pending contacts:
+
+```bash
+python follow_up_automation.py
+```
+
+Run one specific profile only:
+
+```bash
+python follow_up_automation.py --only-url "https://www.linkedin.com/in/michael-ku-jr-512b70194/"
+```
+
+Dry run (no Notion writes):
+
+```bash
+python follow_up_automation.py --dry-run
+```
+
+Manual-send fallback mode:
+
+```bash
+python follow_up_automation.py --manual-send
+```
+
+Notes:
+
+- Safari automation must be allowed on macOS (`Safari > Settings > Advanced > Show Develop menu`, then `Develop > Allow Remote Automation`).
+- You should stay logged in to LinkedIn in Safari.
+- If sending is too early/late for your machine, tune `.env`: `SAFARI_PROFILE_LOAD_DELAY_SEC` and `SAFARI_COMPOSE_LOAD_DELAY_SEC`.
+- By default, Safari runs in background mode (no app activation/pop-up). Set `SAFARI_ACTIVATE_WINDOW=true` if you want visible Safari focus while debugging.
+
 ## Notes about your Notion schema
 
 This script auto-detects the property types in your Contacts database.
